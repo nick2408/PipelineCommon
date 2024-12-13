@@ -1,29 +1,72 @@
-parameters:
-- name: jobName
-  default: ''
-- name: databaseName
-  default: ''
-- name: databasePostfix
-  default: '_DEV'
-- name: artifactName
-  default: 'DatabaseArtifacts'  
-- name: vmImage
-  default: 'ubuntu-16.04'  
-- name: containerImage
-  default: 'kulmam92/flyway-azure:6.2.3'
+variables:
+- group: Snowflake.Database
+- name: DBNAME
+  value: flyway_demo
+- name: flywayartifactName
+  value: DatabaseArtifacts  
+- name: flywayVmImage
+  value: 'ubuntu-16.04'  
+- name: flywayContainerImage
+  value: 'kulmam92/flyway-azure:6.2.3'  
+trigger:
+- master
 
-jobs:
-- job: ${{ parameters.jobName }}
-  timeoutInMinutes: 10
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  container:
-    image: ${{ parameters.containerImage }}      
-  steps:
-  - bash: |
-      echo "##vso[task.setvariable variable=SNOWFLAKE_JDBC_URL]$(SNOWFLAKE_JDBC_URL)$(SNOWFLAKE_ACCOUNT_NAME)/?warehouse=$(SNOWFLAKE_WAREHOUSE)&role=$(SNOWFLAKE_ROLENAME)&authenticator=$(SNOWFLAKE_AUTHENTICATOR)"
-    name: Construct_JDBC_URL
-  - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:./databases/${{ parameters.databaseName }}' info
-    name: Run_flyway_Info
-  - publish: $(System.DefaultWorkingDirectory)/databases
-    artifact: ${{ parameters.artifactName }}
+stages:
+- stage: Build
+  variables:
+  - name: DBNAME_POSTFIX
+    value: _DEV
+  jobs:
+  - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml
+    parameters:
+      jobName: 'BuildDatabase'
+      databaseName: $(DBNAME)
+      databasePostfix: $(DBNAME_POSTFIX)
+      artifactName: $(flywayartifactName)
+      vmImage: $(flywayVmImage)
+      containerImage: $(flywayContainerImage)
+
+- stage: DEV
+  variables:
+  - name: DBNAME_POSTFIX
+    value: _DEV
+  jobs:
+  - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml
+    parameters:
+      jobName: DEV
+      databaseName: $(DBNAME)
+      databasePostfix: $(DBNAME_POSTFIX)
+      artifactName: $(flywayartifactName)
+      vmImage: $(flywayVmImage)
+      containerImage: $(flywayContainerImage)
+      environmentName: DEV
+
+- stage: QA
+  variables:
+  - name: DBNAME_POSTFIX
+    value: _QA
+  jobs:
+  - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml
+    parameters:
+      jobName: QA
+      databaseName: $(DBNAME)
+      databasePostfix: $(DBNAME_POSTFIX)
+      artifactName: $(flywayartifactName)
+      vmImage: $(flywayVmImage)
+      containerImage: $(flywayContainerImage)
+      environmentName: QA
+
+- stage: PROD
+  variables:
+  - name: DBNAME_POSTFIX
+    value: '' # Empty string for PROD
+  jobs:
+  - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml
+    parameters:
+      jobName: PROD
+      databaseName: $(DBNAME)
+      databasePostfix: $(DBNAME_POSTFIX)
+      artifactName: $(flywayartifactName)
+      vmImage: $(flywayVmImage)
+      containerImage: $(flywayContainerImage)
+      environmentName: PROD
