@@ -8,9 +8,7 @@ parameters:
 - name: artifactName
   default: 'DatabaseArtifacts'  
 - name: vmImage
-  default: 'ubuntu-16.04'  
-- name: containerImage
-  default: 'kulmam92/flyway-azure:6.2.3'
+  default: 'windows_snowflake'  
 - name: environmentName
   default: 'DEV'
 - name: flywayCommand
