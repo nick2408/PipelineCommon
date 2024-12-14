@@ -23,12 +23,12 @@ stages:
     value: _DEV
   jobs:
     - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml@PipelineCommon
-    parameters:
-      jobName: 'BuildDatabase'
-      databaseName: $(DBNAME)
-      databasePostfix: $(DBNAME_POSTFIX)
-      artifactName: $(flywayartifactName)
-      vmImage: $(flywayVmImage)
+      parameters:
+        jobName: 'BuildDatabase'
+        databaseName: $(DBNAME)
+        databasePostfix: $(DBNAME_POSTFIX)
+        artifactName: $(flywayartifactName)
+        vmImage: $(flywayVmImage)
 
 
 - stage: DEV
