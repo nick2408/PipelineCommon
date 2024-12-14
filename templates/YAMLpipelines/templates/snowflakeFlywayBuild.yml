@@ -15,7 +15,7 @@ jobs:
   timeoutInMinutes: 10
   pool:
     vmImage: ${{ parameters.vmImage }}
-    steps:
+  steps:
   - bash: |
       echo "##vso[task.setvariable variable=SNOWFLAKE_JDBC_URL]$(SNOWFLAKE_JDBC_URL)$(SNOWFLAKE_ACCOUNT_NAME)/?warehouse=$(SNOWFLAKE_WAREHOUSE)&role=$(SNOWFLAKE_ROLENAME)&authenticator=$(SNOWFLAKE_AUTHENTICATOR)"
     name: Construct_JDBC_URL
