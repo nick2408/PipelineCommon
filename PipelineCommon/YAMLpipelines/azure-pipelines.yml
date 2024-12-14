@@ -1,0 +1,75 @@
+resources:
+  repositories:
+  # template repository
+  - repository: PipelineCommon
+    type: git
+    name: PipelineCommon
+variables:
+- group: Snowflake.Database
+- name: DBNAME
+  value: flyway_demo
+- name: flywayartifactName
+  value: DatabaseArtifacts  
+- name: flywayVmImage
+  value: 'windows_snowflake'  
+
+trigger:
+- master
+
+stages:
+- stage: Build
+  variables:
+  - name: DBNAME_POSTFIX
+    value: _DEV
+  jobs:
+    - template: YAMLpipelines/templates/snowflakeFlywayBuild.yml@PipelineCommon
+      parameters:
+        jobName: 'BuildDatabase'
+        databaseName: $(DBNAME)
+        databasePostfix: $(DBNAME_POSTFIX)
+        artifactName: $(flywayartifactName)
+        vmImage: $(flywayVmImage)
+
+
+- stage: DEV
+  variables:
+  - name: DBNAME_POSTFIX
+    value: _DEV
+  jobs:
+  - template: YAMLpipelines/templates/snowflakeFlywayDeploy.yml@PipelineCommon
+    parameters:
+      jobName: DEV
+      databaseName: $(DBNAME)
+      databasePostfix: $(DBNAME_POSTFIX)
+      artifactName: $(flywayartifactName)
+      vmImage: $(flywayVmImage)
+      environmentName: DEV
+
+- stage: QA
+  variables:
+  - name: DBNAME_POSTFIX
+    value: _QA
+  jobs:
+  - template: YAMLpipelines/templates/snowflakeFlywayDeploy.yml@PipelineCommon
+    parameters:
+      jobName: QA
+      databaseName: $(DBNAME)
+      databasePostfix: $(DBNAME_POSTFIX)
+      artifactName: $(flywayartifactName)
+      vmImage: $(flywayVmImage)
+      environmentName: QA
+
+- stage: PROD
+  variables:
+  - name: DBNAME_POSTFIX
+    value: '' # Empty string for PROD
+  jobs:
+  - template: YAMLpipelines/templates/snowflakeFlywayDeploy.yml@PipelineCommon
+    parameters:
+      jobName: PROD
+      databaseName: $(DBNAME)
+      databasePostfix: $(DBNAME_POSTFIX)
+      artifactName: $(flywayartifactName)
+      vmImage: $(flywayVmImage)
+      environmentName: PROD
+
