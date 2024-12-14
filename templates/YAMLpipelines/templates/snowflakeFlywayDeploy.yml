@@ -18,8 +18,6 @@ jobs:
     timeoutInMinutes: 10
     pool:
       vmImage: ${{ parameters.vmImage }}
-    container:
-      image: ${{ parameters.containerImage }}    
     environment: ${{ parameters.environmentName }}
     strategy:
       runOnce:
