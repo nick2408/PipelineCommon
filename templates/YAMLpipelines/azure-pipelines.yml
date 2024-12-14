@@ -1,3 +1,9 @@
+resources:
+  repositories:
+  # template repository
+  - repository: PipelineCommon
+    type: git
+    name: PipelineCommon
 variables:
 - group: Snowflake.Database
 - name: DBNAME
@@ -16,7 +22,7 @@ stages:
   - name: DBNAME_POSTFIX
     value: _DEV
   jobs:
-  - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml
+    - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml@PipelineCommon
     parameters:
       jobName: 'BuildDatabase'
       databaseName: $(DBNAME)
@@ -30,7 +36,7 @@ stages:
   - name: DBNAME_POSTFIX
     value: _DEV
   jobs:
-  - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml
+  - template: templates/YAMLpipelines/templates/snowflakeFlywayDeploy.yml@PipelineCommon
     parameters:
       jobName: DEV
       databaseName: $(DBNAME)
@@ -44,7 +50,7 @@ stages:
   - name: DBNAME_POSTFIX
     value: _QA
   jobs:
-  - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml
+  - template: templates/YAMLpipelines/templates/snowflakeFlywayDeploy.yml@PipelineCommon
     parameters:
       jobName: QA
       databaseName: $(DBNAME)
@@ -58,7 +64,7 @@ stages:
   - name: DBNAME_POSTFIX
     value: '' # Empty string for PROD
   jobs:
-  - template: templates/YAMLpipelines/templates/snowflakeFlywayBuild.yml
+  - template: templates/YAMLpipelines/templates/snowflakeFlywayDeploy.yml@PipelineCommon
     parameters:
       jobName: PROD
       databaseName: $(DBNAME)
