@@ -3,7 +3,7 @@ resources:
   # template repository
   - repository: PipelineCommon
     type: git
-    name: PipelineCommon
+    name: nithin2408/PipelineCommon
 variables:
 - group: Snowflake.Database
 - name: DBNAME
