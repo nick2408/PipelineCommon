@@ -10,7 +10,8 @@ parameters:
 - name: vmImage
   default: 'ubuntu-16.04'  
 - name: containerImage
-  default: 'flyway/flyway:11-azure'  
+  default: 'docker pull redgate/flyway:11.1.0'
+  #default: 'flyway/flyway:11-azure'  
   #default: 'kulmam92/flyway-azure:6.2.3'  
 
 jobs:
