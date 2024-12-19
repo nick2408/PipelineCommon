@@ -11,7 +11,9 @@ variables:
 - name: flywayartifactName
   value: DatabaseArtifacts  
 - name: flywayVmImage
-  value: 'windows_snowflake'  
+  value: 'ubuntu-16.04'  
+- name: flywayContainerImage
+  value: 'kulmam92/flyway-azure:6.2.3'  
 
 trigger:
 - master
@@ -29,6 +31,7 @@ stages:
         databasePostfix: $(DBNAME_POSTFIX)
         artifactName: $(flywayartifactName)
         vmImage: $(flywayVmImage)
+        containerImage: $(flywayContainerImage)
 
 
 - stage: DEV
@@ -43,6 +46,7 @@ stages:
       databasePostfix: $(DBNAME_POSTFIX)
       artifactName: $(flywayartifactName)
       vmImage: $(flywayVmImage)
+      containerImage: $(flywayContainerImage)
       environmentName: DEV
 
 - stage: QA
@@ -57,6 +61,7 @@ stages:
       databasePostfix: $(DBNAME_POSTFIX)
       artifactName: $(flywayartifactName)
       vmImage: $(flywayVmImage)
+      containerImage: $(flywayContainerImage)
       environmentName: QA
 
 - stage: PROD
@@ -71,5 +76,6 @@ stages:
       databasePostfix: $(DBNAME_POSTFIX)
       artifactName: $(flywayartifactName)
       vmImage: $(flywayVmImage)
+      containerImage: $(flywayContainerImage)
       environmentName: PROD
 
