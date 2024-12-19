@@ -15,7 +15,7 @@ parameters:
 jobs:
 - job: ${{ parameters.jobName }}
   timeoutInMinutes: 10
-  pool: Azure Pipelines
+  pool: azureagent
     
     #vmImage: ${{ parameters.vmImage }}
   container:
