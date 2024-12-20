@@ -26,7 +26,7 @@ jobs:
   - bash: |
       echo "##vso[task.setvariable variable=SNOWFLAKE_JDBC_URL]$(SNOWFLAKE_JDBC_URL)$(SNOWFLAKE_ACCOUNT_NAME)/?warehouse=$(SNOWFLAKE_WAREHOUSE)&role=$(SNOWFLAKE_ROLENAME)&authenticator=$(SNOWFLAKE_AUTHENTICATOR)"
     name: Construct_JDBC_URL
-  - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:./databases/${{ parameters.databaseName }}' info
+  - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&JDBC_QUERY_RESULT_FORMAT=JSON&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:./databases/${{ parameters.databaseName }}' info
     name: Run_flyway_Info
   - publish: $(System.DefaultWorkingDirectory)/databases
     artifact: ${{ parameters.artifactName }}
