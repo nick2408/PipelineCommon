@@ -10,7 +10,7 @@ parameters:
 - name: vmImage
   default: 'ubuntu-16.04'  
 - name: containerImage
-  default: 'kulmam92/flyway-azure:6.2.3'
+  default: 'flyway/flyway:11-azure'
 - name: environmentName
   default: 'DEV'
 - name: flywayCommand
@@ -19,8 +19,8 @@ parameters:
 jobs:
 - job: ${{ parameters.jobName }}
   timeoutInMinutes: 10
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: azureagent
+    #vmImage: ${{ parameters.vmImage }}
   container:
     image: ${{ parameters.containerImage }} 
   steps:

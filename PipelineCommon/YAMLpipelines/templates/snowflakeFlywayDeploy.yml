@@ -18,8 +18,8 @@ jobs:
   - deployment: ${{ parameters.jobName }}
     displayName: deploy to ${{ parameters.jobName }}
     timeoutInMinutes: 10
-    pool:
-      vmImage: ${{ parameters.vmImage }}
+    pool: azureagent
+      #vmImage: ${{ parameters.vmImage }}
     container:
       image: ${{ parameters.containerImage }} 
     environment: ${{ parameters.environmentName }}
