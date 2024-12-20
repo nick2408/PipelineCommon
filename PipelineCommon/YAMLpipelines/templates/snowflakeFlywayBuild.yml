@@ -12,7 +12,9 @@ parameters:
 - name: containerImage
   #default: 'redgate/flyway:11.1.0'
   default: 'flyway/flyway:11-azure'
-  #default: 'kulmam92/flyway-azure:6.2.3'  
+  #default: 'kulmam92/flyway-azure:6.2.3'
+- name: SNOWFLAKE_ACCOUNT_NAME
+  default: 'ycsvaig-tra78742.snowflakecomputing.com'  
 
 jobs:
 - job: ${{ parameters.jobName }}
@@ -23,7 +25,7 @@ jobs:
     image: ${{ parameters.containerImage }} 
   steps:
   - bash: |
-      echo "##vso[task.setvariable variable=SNOWFLAKE_JDBC_URL]$(SNOWFLAKE_JDBC_URL)$(SNOWFLAKE_ACCOUNT_NAME)/?warehouse=$(SNOWFLAKE_WAREHOUSE)&role=$(SNOWFLAKE_ROLENAME)&authenticator=$(SNOWFLAKE_AUTHENTICATOR)"
+      echo "##vso[task.setvariable variable=SNOWFLAKE_JDBC_URL]$(SNOWFLAKE_JDBC_URL)${{parameters.SNOWFLAKE_ACCOUNT_NAME}}/?warehouse=$(SNOWFLAKE_WAREHOUSE)&role=$(SNOWFLAKE_ROLENAME)&authenticator=$(SNOWFLAKE_AUTHENTICATOR)"
     name: Construct_JDBC_URL
   - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&JDBC_QUERY_RESULT_FORMAT=JSON&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:./databases/${{ parameters.databaseName }}' info
     name: Run_flyway_Info
