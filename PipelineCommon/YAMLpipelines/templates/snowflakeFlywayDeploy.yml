@@ -12,7 +12,9 @@ parameters:
 - name: containerImage
   default: 'flyway/flyway:11-azure'  
 - name: environmentName
-  default: 'DEV'  
+  default: 'DEV'
+- name: SNOWFLAKE_ACCOUNT_NAME
+  default: 'ycsvaig-tra78742.snowflakecomputing.com'
 
 jobs:
   - deployment: ${{ parameters.jobName }}
@@ -31,7 +33,7 @@ jobs:
           - download: current
             artifact: ${{ parameters.artifactName }}
           - bash: |
-              echo "##vso[task.setvariable variable=SNOWFLAKE_JDBC_URL]$(SNOWFLAKE_JDBC_URL)$(SNOWFLAKE_ACCOUNT_NAME)/?warehouse=$(SNOWFLAKE_WAREHOUSE)&role=$(SNOWFLAKE_ROLENAME)&authenticator=$(SNOWFLAKE_AUTHENTICATOR)"
+              echo "##vso[task.setvariable variable=SNOWFLAKE_JDBC_URL]$(SNOWFLAKE_JDBC_URL)${{parameters.SNOWFLAKE_ACCOUNT_NAME}}/?warehouse=$(SNOWFLAKE_WAREHOUSE)&role=$(SNOWFLAKE_ROLENAME)&authenticator=$(SNOWFLAKE_AUTHENTICATOR)"
             name: Construct_JDBC_URL
           - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&JDBC_QUERY_RESULT_FORMAT=JSON&&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:$(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.databaseName }}' repair
             name: Run_flyway_Repair
