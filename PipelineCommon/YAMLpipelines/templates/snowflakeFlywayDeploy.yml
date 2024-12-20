@@ -33,9 +33,9 @@ jobs:
           - bash: |
               echo "##vso[task.setvariable variable=SNOWFLAKE_JDBC_URL]$(SNOWFLAKE_JDBC_URL)$(SNOWFLAKE_ACCOUNT_NAME)/?warehouse=$(SNOWFLAKE_WAREHOUSE)&role=$(SNOWFLAKE_ROLENAME)&authenticator=$(SNOWFLAKE_AUTHENTICATOR)"
             name: Construct_JDBC_URL
-          - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:$(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.databaseName }}' repair
+          - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&JDBC_QUERY_RESULT_FORMAT=JSON&&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:$(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.databaseName }}' repair
             name: Run_flyway_Repair
-          - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:$(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.databaseName }}' migrate
+          - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&JDBC_QUERY_RESULT_FORMAT=JSON&&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:$(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.databaseName }}' migrate
             name: Run_flyway_Migrate
-          - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:$(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.databaseName }}' validate
+          - script: flyway -url='$(SNOWFLAKE_JDBC_URL)&JDBC_QUERY_RESULT_FORMAT=JSON&&db=${{ parameters.databaseName }}${{ parameters.databasePostfix }}' -user=$(SNOWFLAKE_DEVOPS_USERNAME) -password=$(SNOWFLAKE_DEVOPS_SECRET) -locations='filesystem:$(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.databaseName }}' validate
             name: Run_flyway_Validate
