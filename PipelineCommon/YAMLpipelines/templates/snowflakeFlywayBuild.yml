@@ -18,8 +18,8 @@ jobs:
 - job: ${{ parameters.jobName }}
   timeoutInMinutes: 10
   pool: azureagent
-    #vmImage: ${{ parameters.vmImage }}
-  #container:
+    vmImage: ${{ parameters.vmImage }}
+  container:
     image: ${{ parameters.containerImage }} 
   steps:
   - bash: |
